@@ -1,0 +1,40 @@
+{
+  "properties": [
+    {
+      "name": "study.studentId",
+      "type": "java.lang.Integer",
+      "description": "studentId.",
+      "defaultValue": 1
+    },
+    {
+      "name": "study.studentName",
+      "type": "java.lang.String",
+      "description": "studentName.",
+      "defaultValue": "WayneDeng"
+    },
+    {
+      "name": "study.klassId",
+      "type": "java.lang.Integer",
+      "description": "klassId.",
+      "defaultValue": 1
+    },
+    {
+      "name": "study.klassName",
+      "type": "java.lang.String",
+      "description": "klassName.",
+      "defaultValue": "XX班级"
+    },
+    {
+      "name": "study.schoolName",
+      "type": "java.lang.String",
+      "description": "schoolName.",
+      "defaultValue": "XX大学"
+    },
+    {
+      "name": "study.schoolAddress",
+      "type": "java.lang.String",
+      "description": "schoolAddress.",
+      "defaultValue": "XX路"
+    }
+  ]
+}
