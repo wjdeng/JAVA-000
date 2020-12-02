@@ -1,3 +1,9 @@
+# 学习笔记
+
+本周完成了必做题：基于电商交易场景（用户、商品、订单），设计一套简单的表结构
+
+```
+#创建数据库
 
 CREATE SCHEMA `db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 use db;
@@ -52,3 +58,7 @@ CREATE TABLE `tb_goods` (
   KEY `goods_name` (`goods_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='电商场景-商品表';
 
+
+
+
+```
