@@ -126,5 +126,45 @@
 
 
 ##### 第三题 读写分离-数据库框架版本2.0
-这次没有做
-有时间再完成
+可以看项目shardingsphere-jdbc-demo这个项目
+
+做法很简单只需要在application.properties配置好就可以了，然后直接在service端调用UserMapper方法会自动的在主库写，自动的在从库读
+
+```
+server.port=8080
+
+#指定mybatis信息
+mybatis.config-location=classpath:mybatis-config.xml
+
+spring.shardingsphere.datasource.names=master,slave0
+
+# 数据源 主库
+spring.shardingsphere.datasource.master.type=com.alibaba.druid.pool.DruidDataSource
+spring.shardingsphere.datasource.master.driver-class-name=com.mysql.jdbc.Driver
+spring.shardingsphere.datasource.master.url=jdbc:mysql://localhost:3306/db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+spring.shardingsphere.datasource.master.username=root
+spring.shardingsphere.datasource.master.password=12345Abc
+
+# 数据源 从库
+spring.shardingsphere.datasource.slave0.type=com.alibaba.druid.pool.DruidDataSource
+spring.shardingsphere.datasource.slave0.driver-class-name=com.mysql.jdbc.Driver
+spring.shardingsphere.datasource.slave0.url=jdbc:mysql://localhost:3307/db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+spring.shardingsphere.datasource.slave0.username=root
+spring.shardingsphere.datasource.slave0.password=12345Abc
+
+# 读写分离
+#spring.shardingsphere.masterslave.load-balance-algorithm-type=round_robin
+spring.shardingsphere.masterslave.name=ms
+spring.shardingsphere.masterslave.master-data-source-name=master
+spring.shardingsphere.masterslave.slave-data-source-names=slave0
+
+#打印sql
+spring.shardingsphere.props.sql.show=true
+
+spring.datasource.username=root
+spring.datasource.password=12345Abc
+spring.datasource.url=jdbc:mysql://127.0.0.1:3306/db?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+spring.datasource.driverClassName=com.mysql.jdbc.Driver
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+
+```
