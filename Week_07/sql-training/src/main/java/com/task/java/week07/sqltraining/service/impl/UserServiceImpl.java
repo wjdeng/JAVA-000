@@ -7,6 +7,7 @@ import com.task.java.week07.sqltraining.model.User;
 import com.task.java.week07.sqltraining.model.UserExample;
 import com.task.java.week07.sqltraining.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
  * @Date 2020/12/2 下午7:40
  * @Version 1.0
  **/
+
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,8 +27,8 @@ import java.util.List;
 public class SqlTrainingController {
 
 	@SuppressWarnings("all")
-	@Autowired
-	private DataSource dataSource;
+	@Resource
+	private DataSource druid;
 
 	@SuppressWarnings("all")
 	@Autowired
@@ -47,7 +48,7 @@ public class SqlTrainingController {
 		PreparedStatement preparedStatement = null;
 		Connection connection = null;
 		try {
-			connection = dataSource.getConnection();
+			connection = druid.getConnection();
 			String sql = "insert into db.tb_user(id, user_name, passport, nickname, id_card, email, created_at, updated_at) values(?,?,?,?,?,?,now(), now());";
 			preparedStatement = connection.prepareStatement(sql);
 
@@ -88,7 +89,7 @@ public class SqlTrainingController {
 		Statement statement = null;
 		Connection connection = null;
 		try {
-			connection = dataSource.getConnection();
+			connection = druid.getConnection();
 			statement = connection.createStatement();
 
 			for (int i=1; i<1000000; i++){
@@ -121,10 +122,9 @@ public class SqlTrainingController {
 	public String insert(){
 		long now = System.currentTimeMillis();
 		User user = new User();
-		user.setId(1L);
 		user.setCreatedAt(now);
 		user.setEmail("wayne@163.com");
-		user.setIdCard("123112312");
+		user.setIdCard(String.valueOf(System.currentTimeMillis()));
 		user.setNickname("wayne");
 		user.setUserName("WayneDeng");
 		user.setPassport("12345Abc");
@@ -138,7 +138,8 @@ public class SqlTrainingController {
 	@ResponseBody
 	public List<User> select(){
 		System.out.println("=======查询接口=======");
-		return userService.listAllUsers();
+		 List<User> users = userService.listAllUsers();
+		return users;
 	}
 
 }

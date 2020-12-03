@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -25,18 +26,21 @@ import java.util.Map;
  * @Version 1.0
  **/
 @Configuration
+@EnableConfigurationProperties
 @MapperScan(basePackages = {"com.task.java.week07.sqltraining.dao"}, sqlSessionTemplateRef = "sqlTemplate")
 public class DataSourceConfig {
 
 	//主库
-	@Bean
+	@Bean(name = "masterDb")
+	@Qualifier("masterDb")
 	@ConfigurationProperties(prefix = "spring.datasource.master")
 	public DataSource masterDb() {
 		return DruidDataSourceBuilder.create().build();
 	}
 
 	//从库
-	@Bean
+	@Bean(name = "slaveDb")
+	@Qualifier("slaveDb")
 	@ConditionalOnProperty(prefix = "spring.datasource", name = "slave", matchIfMissing = true)
 	@ConfigurationProperties(prefix = "spring.datasource.slave")
 	public DataSource slaveDb() {
@@ -44,7 +48,8 @@ public class DataSourceConfig {
 	}
 
 	// 主从动态配置
-	@Bean
+	@Bean(name = "dynamicDb")
+	@Qualifier("dynamicDb")
 	public DynamicDataSource dynamicDb(@Qualifier("masterDb") DataSource masterDataSource,
 	                                   @Autowired(required = false) @Qualifier("slaveDb") DataSource slaveDataSource) {
 		DynamicDataSource dynamicDataSource = new DynamicDataSource();
