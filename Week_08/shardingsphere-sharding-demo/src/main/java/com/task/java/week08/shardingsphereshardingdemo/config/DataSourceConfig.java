@@ -3,6 +3,7 @@ package com.task.java.week08.shardingsphereshardingdemo.config;
 import com.alibaba.druid.pool.DruidDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.driver.api.ShardingSphereDataSourceFactory;
+import org.apache.shardingsphere.infra.config.RuleConfiguration;
 import org.apache.shardingsphere.infra.config.algorithm.ShardingSphereAlgorithmConfiguration;
 import org.apache.shardingsphere.sharding.api.config.ShardingRuleConfiguration;
 import org.apache.shardingsphere.sharding.api.config.rule.ShardingTableRuleConfiguration;
@@ -12,10 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @Author Wayne.Deng
@@ -48,36 +46,45 @@ public class DataSourceConfig {
 		dataSource2.setPassword("12345Abc");
 		dataSourceMap.put("ds1", dataSource2);
 
-		// 配置 t_order 表规则
+		// 配置 tb_goods 表规则
 		ShardingTableRuleConfiguration orderTableRuleConfig = new ShardingTableRuleConfiguration("tb_goods", "ds${0..1}.tb_goods${0..15}");
+		ShardingTableRuleConfiguration userOrderTableRuleConfig = new ShardingTableRuleConfiguration("tb_user", "ds0.tb_user${0..9}");
 
 		// 配置分库策略
 		orderTableRuleConfig.setDatabaseShardingStrategy(new StandardShardingStrategyConfiguration("buyer_id", "dbShardingAlgorithm"));
+		userOrderTableRuleConfig.setDatabaseShardingStrategy(new StandardShardingStrategyConfiguration("id", "userDbShardingAlgorithm"));
 
 		// 配置分表策略
 		orderTableRuleConfig.setTableShardingStrategy(new StandardShardingStrategyConfiguration("id", "tableShardingAlgorithm"));
-
-		// 省略配置 t_order_item 表规则...
-		// ...
+		userOrderTableRuleConfig.setTableShardingStrategy(new StandardShardingStrategyConfiguration("id", "userTableShardingAlgorithm"));
 
 		// 配置分片规则
 		ShardingRuleConfiguration shardingRuleConfig = new ShardingRuleConfiguration();
 		shardingRuleConfig.getTables().add(orderTableRuleConfig);
+		shardingRuleConfig.getTables().add(userOrderTableRuleConfig);
 
 		// 配置分库算法
 		Properties dbShardingAlgorithmrProps = new Properties();
 		dbShardingAlgorithmrProps.setProperty("algorithm-expression", "ds${buyer_id % 2}");
 		shardingRuleConfig.getShardingAlgorithms().put("dbShardingAlgorithm", new ShardingSphereAlgorithmConfiguration("INLINE", dbShardingAlgorithmrProps));
 
+		Properties userDbShardingAlgorithmrProps = new Properties();
+		userDbShardingAlgorithmrProps.setProperty("algorithm-expression", "ds0");
+		shardingRuleConfig.getShardingAlgorithms().put("userDbShardingAlgorithm", new ShardingSphereAlgorithmConfiguration("INLINE", userDbShardingAlgorithmrProps));
+
 		// 配置分表算法
 		Properties tableShardingAlgorithmrProps = new Properties();
 		tableShardingAlgorithmrProps.setProperty("algorithm-expression", "tb_goods${id % 16}");
 		shardingRuleConfig.getShardingAlgorithms().put("tableShardingAlgorithm", new ShardingSphereAlgorithmConfiguration("INLINE", tableShardingAlgorithmrProps));
 
+		Properties userTableShardingAlgorithmrProps = new Properties();
+		userTableShardingAlgorithmrProps.setProperty("algorithm-expression", "tb_user${id % 10}");
+		shardingRuleConfig.getShardingAlgorithms().put("userTableShardingAlgorithm", new ShardingSphereAlgorithmConfiguration("INLINE", userTableShardingAlgorithmrProps));
+
+
 		DataSource dataSource = null;
 		try {
 			dataSource = ShardingSphereDataSourceFactory.createDataSource(dataSourceMap, Collections.singleton(shardingRuleConfig), new Properties());
-
 		} catch (SQLException e) {
 			log.info("", e);
 		}
