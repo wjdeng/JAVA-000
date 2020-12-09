@@ -14,4 +14,6 @@ public interface UserService {
 	public User insert(User user);
 
 	public List<User> listAll();
+
+	public void delete(Long id);
 }

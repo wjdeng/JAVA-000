@@ -37,4 +37,11 @@ public class UserServiceImpl implements UserService {
 		List<User> userList = userMapper.selectByExample(userExample);
 		return userList;
 	}
+
+	@Override
+	public void delete(Long id) {
+		UserExample userExample = new UserExample();
+		userExample.createCriteria().andIdEqualTo(id);
+		userMapper.deleteByExample(userExample);
+	}
 }

@@ -38,4 +38,11 @@ public class GoodsServiceImpl implements GoodsService {
 		List<Goods> goodsList = goodsMapper.selectByExample(goodsExample);
 		return goodsList;
 	}
+
+	@Override
+	public void delete(Long goodsId, Long buyerId) {
+		GoodsExample goodsExample = new GoodsExample();
+		goodsExample.createCriteria().andBuyerIdEqualTo(buyerId).andIdEqualTo(goodsId);
+		goodsMapper.deleteByExample(goodsExample);
+	}
 }

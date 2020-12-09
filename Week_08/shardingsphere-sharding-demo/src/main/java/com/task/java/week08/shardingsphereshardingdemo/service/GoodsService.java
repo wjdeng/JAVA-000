@@ -14,4 +14,6 @@ public interface GoodsService {
 	public Goods insert(Goods goods);
 
 	public List<Goods> listAll();
+
+	public void delete(Long goodsId, Long buyerId);
 }
